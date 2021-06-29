@@ -217,15 +217,94 @@ void prime_factors(int num, int** fac_list, int* num_factors){
   return;
 }
 
+/* void factors(int num,  int** fac_list, int* num_factors){ */
+/*   int i, n=0; */
+/*   int *_fac_list = NULL; */
+/*   for(i=1; i<=num; i++){ */
+/*     if (num % i == 0){ */
+/*     _fac_list = realloc(_fac_list, (n+1)*sizeof(int)); */
+/*     _fac_list[n] = i; */
+/*     n++; */
+/*     } */
+/*   } */
+/*   *num_factors = n; */
+/*   *fac_list = _fac_list; */
+/*   return; */
+/* } */
+
+void print_arr(int *arr, int len){
+  int i;
+  for(i=0; i<len; i++){
+    printf("%d, ", *(arr+i));
+  }
+  printf("\n");
+}
+
+
+void factors(int num,  int** fac_list, int* num_factors){
+  int i, n=1, *pf, pfn, count=0, last=0, last_pos=0;
+  prime_factors(num, &pf, &pfn);
+  int *_pf_count = malloc(pfn * sizeof(int));
+  for(i=0; i<pfn; i++){
+    if (*(pf+i) == last){
+      count++;
+    }else{
+      *(_pf_count+last_pos) = count;
+      last_pos = i;
+      n *= (count + 1);
+      last = *(pf+i);
+      count = 1;
+    }
+  }
+  *(_pf_count+last_pos) = count;
+  n *= (count + 1);
+  int *_fac_list =  malloc(n*sizeof(int));
+  for (i=0; i<n; i++){
+    *(_fac_list + i) = 1;
+  }
+  
+  int prod;
+  int j, k, l;
+  int batch, size, repeat=1;
+  for(i=0; i<pfn;){
+    size = *(_pf_count + i)+1;
+    batch = n / (size * repeat);
+    /* printf("b=%d, s=%d, r=%d\n", batch, size, repeat); */
+    for(j=0; j<batch; j++){
+      prod = *(pf+i);
+      for(k=1; k < size; k++){
+	for (l=0; l<repeat; l++){
+	  *(_fac_list + (j * size + k)*repeat +l) *= prod;
+	}
+	/* print_arr(_fac_list, n); */
+	prod *= *(pf+i);
+      }
+    }
+    repeat *= size;
+    i += *(_pf_count + i);
+  }
+  /* int *_fac_list =  malloc(n*sizeof(int)); */
+  /* n=0; */
+  /* for(i=1; i<=num; i++){ */
+  /*   if (num % i == 0){ */
+  /*     _fac_list[n] = i; */
+  /*     n++; */
+  /*   } */
+  /* } */
+  *num_factors = n;
+  *fac_list = _fac_list;
+  return;
+}
+
+
 
 /* int main(int argc, char *argv[]) { */
 /*   int * fac; */
-/*   int * l; */
+/*   int l; */
 /*   int i; */
-/*   printf("smallest-%d\n",smallest_prime_factor(80)); */
-/*   prime_factors(80, &fac, l); */
+/*   factors(360, &fac, &l); */
 /*   printf("factors\n"); */
-/*   for (i=0;i<*l;i++){ */
+/*   for (i=0;i<l;i++){ */
 /*     printf("%d,",fac[i]); */
 /*   } */
 /*   printf("\n"); */

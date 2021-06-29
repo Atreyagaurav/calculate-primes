@@ -46,5 +46,7 @@ int is_prime(int num);
 
 int smallest_prime_factor(int num);
 
-void prime_factors(int num, int** fac_list, int* num_factors);
+void prime_factors(int num, int **fac_list, int *num_factors);
+
+void factors(int num, int** fac_list, int* num_factors);
 
